@@ -1,0 +1,53 @@
+
+{
+  "expo": {
+    "name": "KidsSafe",
+    "slug": "kidssafe-tanhung",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/kidssafe-logo.png",
+    "scheme": "kidssafe",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/kidssafe-logo.png",
+        "backgroundColor": "#1e40af"
+      },
+      "icon": "./assets/images/kidssafe-logo.png",
+      "package": "com.kidssafe.incidentreport",
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/kidssafe-logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/kidssafe-logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9036ce2f-4870-4c07-8540-130ce29dc8b5"
+      }
+    },
+    "owner": "andydashie"
+  }
+}

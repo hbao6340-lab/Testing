@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Báo Cáo Sự Cố Tích Hợp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --accent-color: #ef4444;
+            --dark-blue: #1e3a8a;
+            --dark-bg: #0f172a;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .citizen-app {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #374151;
+        }
+        
+        .operator-app {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+            color: #fff;
+        }
+        
+        .website-app {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+            color: #fff;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+        
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #dc2626 100%);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .emergency-pulse {
+            animation: emergencyPulse 2s infinite;
+        }
+        
+        @keyframes emergencyPulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .sound-wave {
+            animation: soundWave 1.5s infinite;
+        }
+        
+        @keyframes soundWave {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+        
+        .app-container {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .app-container.active {
+            display: block;
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        
+        .status-emergency { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .status-processing { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .status-pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .status-resolved { background: linear-gradient(135deg, #10b981, #059669); }
+    </style>
+</head>
+<body>
+    <!-- App Selection Menu -->
+    <div id="appSelection" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center">
+            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-shield-alt text-white text-2xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">HỆ THỐNG BÁO CÁO SỰ CỐ</h1>
+            <p class="text-gray-600 mb-6">Chọn ứng dụng để bắt đầu</p>
+            
+            <div class="space-y-3">
+                <button onclick="showApp('citizen')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition">
+                    <i class="fas fa-user mr-2"></i> Ứng Dụng Công Dân
+                </button>
+                
+                <button onclick="showApp('operator')" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition">
+                    <i class="fas fa-headset mr-2"></i> Ứng Dụng Điều Hành
+                </button>
+                
+                <button onclick="showApp('website')" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold transition">
+                    <i class="fas fa-desktop mr-2"></i> Trang Web Điều Hành
+                </button>
+            </div>
+            
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm text-blue-700">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Tất cả ứng dụng được tích hợp và chia sẻ dữ liệu thời gian thực
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Citizen App -->
+    <div id="citizenApp" class="app-container citizen-app pb-20">
+        <!-- Header -->
+        <header class="header-gradient text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold">BÁO CÁO SỰ CỐ</h1>
+                            <p class="text-sm opacity-90">Ứng dụng công dân</p>
+                        </div>
+                    </div>
+                    <button onclick="showAppSelection()" class="p-2 rounded-full bg-white/20 hover:bg-white/30 transition">
+                        <i class="fas fa-exchange-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-6">
+            <!-- Emergency Button -->
+            <div class="text-center mb-8">
+                <button onclick="handleEmergency()" class="emergency-btn text-white py-4 px-8 rounded-full text-lg font-semibold w-full max-w-md mx-auto flex items-center justify-center space-x-2">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>BÁO CÁO KHẨN CẤP</span>
+                </button>
+            </div>
+
+            <!-- Report Form -->
+            <form id="reportForm" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Báo cáo sự cố</h2>
+                
+                <!-- Phone Number -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Số điện thoại *</label>
+                    <input type="tel" id="phoneNumber" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none" 
+                           placeholder="Nhập số điện thoại của bạn" required>
+                </div>
+
+                <!-- Address -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Địa chỉ *</label>
+                    <div class="relative">
+                        <input type="text" id="address" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none pr-12" 
+                               placeholder="Nhập địa chỉ sự cố" required>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả sự cố *</label>
+                    <textarea id="description" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none" 
+                              rows="4" placeholder="Mô tả chi tiết sự cố..." required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition">
+                    GỬI BÁO CÁO
+                </button>
+            </form>
+
+            <!-- Recent Reports -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Báo cáo gần đây</h2>
+                <div id="recentReports" class="space-y-3">
+                    <!-- Reports will be loaded here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-3xl">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex justify-around">
+                    <a href="#" class="flex flex-col items-center text-blue-600">
+                        <i class="fas fa-home text-xl"></i>
+                        <span class="text-xs mt-1">Trang chủ</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-history text-xl"></i>
+                        <span class="text-xs mt-1">Lịch sử</span>
+                    </a>
+                    <div class="relative -mt-8">
+                        <button class="emergency-btn w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <a href="#" class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-map-marker-alt text-xl"></i>
+                        <span class="text-xs mt-1">Bản đồ</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-user text-xl"></i>
+                        <span class="text-xs mt-1">Tài khoản</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Operator Mobile App -->
+    <div id="operatorApp" class="app-container operator-app">
+        <!-- Header -->
+        <header class="bg-gray-900 border-b border-gray-700">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-headset text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold">TRUNG TÂM ĐIỀU HÀNH</h1>
+                            <p class="text-sm text-blue-300">Ứng dụng di động</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                                <i class="fas fa-bell text-yellow-400"></i>
+                                <span id="notificationCount" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
+                            </button>
+                        </div>
+                        
+                        <button onclick="showAppSelection()" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                            <i class="fas fa-exchange-alt text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main class="container mx-auto px-4 py-6">
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="dashboard-card rounded-2xl p-4 text-center">
+                    <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-exclamation-triangle text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-red-400" id="emergencyCount">0</h3>
+                    <p class="text-sm text-gray-300">Sự cố khẩn cấp</p>
+                </div>
+                
+                <div class="dashboard-card rounded-2xl p-4 text-center">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-clock text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-yellow-400" id="processingCount">0</h3>
+                    <p class="text-sm text-gray-300">Đang xử lý</p>
+                </div>
+                
+                <div class="dashboard-card rounded-2xl p-4 text-center">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-tasks text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-400" id="totalCount">0</h3>
+                    <p class="text-sm text-gray-300">Tổng sự cố</p>
+                </div>
+                
+                <div class="dashboard-card rounded-2xl p-4 text-center">
+                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-check-circle text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-green-400" id="resolvedCount">0</h3>
+                    <p class="text-sm text-gray-300">Đã giải quyết</p>
+                </div>
+            </div>
+
+            <!-- Incident List -->
+            <div class="dashboard-card rounded-2xl p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Sự cố mới nhất</h2>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-blue-600 rounded-lg text-sm">Tất cả</button>
+                        <button class="px-3 py-1 bg-gray-700 rounded-lg text-sm">Mới nhất</button>
+                    </div>
+                </div>
+                
+                <div id="operatorIncidents" class="space-y-3 max-h-96 overflow-y-auto">
+                    <!-- Incidents will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Emergency Alert Modal -->
+            <div id="emergencyModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
+                <div class="bg-red-900 rounded-2xl p-6 mx-4 max-w-md w-full">
+                    <div class="text-center mb-4">
+                        <div class="sound-wave w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">SỰ CỐ KHẨN CẤP!</h3>
+                        <p class="text-red-200" id="emergencyTitle">Đang tải...</p>
+                    </div>
+                    
+                    <div class="bg-red-800 rounded-lg p-4 mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-red-200" id="emergencyId">#</span>
+                            <span class="text-sm text-red-300" id="emergencyTime">Vừa xảy ra</span>
+                        </div>
+                        <p class="text-white mb-2" id="emergencyLocation">Đang tải...</p>
+                        <p class="text-red-200 text-sm" id="emergencyPhone">Đang tải...</p>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="handleEmergencyCall()" class="flex-1 bg-white text-red-600 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                            <i class="fas fa-phone-alt mr-2"></i> Gọi
+                        </button>
+                        <button onclick="closeEmergencyModal()" class="flex-1 bg-red-700 text-white py-3 rounded-lg font-semibold hover:bg-red-600">
+                            <i class="fas fa-times mr-2"></i> Đóng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Operator Website -->
+    <div id="websiteApp" class="app-container website-app">
+        <!-- Header -->
+        <header class="bg-gray-800 border-b border-gray-700">
+            <div class="flex items-center justify-between p-4">
+                <div>
+                    <button onclick="showAppSelection()" class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition">
+                        <i class="fas fa-arrow-left text-white"></i>
+                    </button>
+                </div>
+                
+                <div class="flex-1 text-center">
+                    <h1 class="text-xl font-bold">TRUNG TÂM ĐIỀU HÀNH</h1>
+                    <p class="text-sm text-blue-300">Phiên bản web</p>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition">
+                            <i class="fas fa-bell text-yellow-400"></i>
+                            <span id="websiteNotificationCount" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="p-6">
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="dashboard-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Sự cố khẩn cấp</p>
+                            <h3 class="text-2xl font-bold text-red-400" id="websiteEmergencyCount">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Đang xử lý</p>
+                            <h3 class="text-2xl font-bold text-blue-400" id="websiteProcessingCount">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Tổng sự cố</p>
+                            <h3 class="text-2xl font-bold text-white" id="websiteTotalCount">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-tasks text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Đã giải quyết</p>
+                            <h3 class="text-2xl font-bold text-green-400" id="websiteResolvedCount">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check-circle text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incident Table -->
+            <div class="dashboard-card rounded-2xl p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold">Tất cả sự cố</h2>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-blue-600 rounded-lg text-sm">Tất cả

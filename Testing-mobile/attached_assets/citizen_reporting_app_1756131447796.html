@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Sự Cố - Ứng Dụng Công Dân</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --accent-color: #ef4444;
+            --dark-blue: #1e3a8a;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+        
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #dc2626 100%);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        .emergency-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+        
+        .form-input {
+            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .form-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .media-preview {
+            transition: all 0.3s ease;
+        }
+        
+        .media-preview:hover {
+            transform: scale(1.02);
+        }
+        
+        .map-container {
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .status-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .floating-action {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+    <!-- Header -->
+    <header class="header-gradient text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">BÁO CÁO SỰ CỐ</h1>
+                        <p class="text-sm opacity-90">Ứng dụng công dân</p>
+                    </div>
+                </div>
+                <button class="p-2 rounded-full bg-white/20 hover:bg-white/30 transition">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Emergency Button -->
+        <div class="text-center mb-8">
+            <button class="emergency-btn text-white py-4 px-8 rounded-full text-lg font-semibold w-full max-w-md mx-auto flex items-center justify-center space-x-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>BÁO CÁO KHẨN CẤP</span>
+            </button>
+        </div>
+
+        <!-- Report Form -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Báo cáo sự cố</h2>
+            
+            <!-- Phone Number -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Số điện thoại *</label>
+                <input type="tel" class="form-input w-full px-4 py-3 rounded-lg border" 
+                       placeholder="Nhập số điện thoại của bạn" required>
+            </div>
+
+            <!-- Address with Map -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Địa chỉ *</label>
+                <div class="relative">
+                    <input type="text" class="form-input w-full px-4 py-3 rounded-lg border pr-12" 
+                           placeholder="Nhập địa chỉ hoặc chọn trên bản đồ" required>
+                    <button class="absolute right-3 top-3 text-blue-600">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                </div>
+                <div class="map-container bg-gray-200 mt-3 flex items-center justify-center">
+                    <div class="text-center text-gray-600">
+                        <i class="fas fa-map-marked-alt text-3xl mb-2"></i>
+                        <p>Bản đồ sẽ hiển thị ở đây</p>
+                    </div>
+                </div>
+                <div class="flex space-x-2 mt-2">
+                    <button class="text-xs text-blue-600 flex items-center">
+                        <i class="fab fa-google mr-1"></i> Google Maps
+                    </button>
+                    <button class="text-xs text-green-600 flex items-center">
+                        <i class="fas fa-map mr-1"></i> Vietmap
+                    </button>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả sự cố *</label>
+                <textarea class="form-input w-full px-4 py-3 rounded-lg border" 
+                          rows="4" placeholder="Mô tả chi tiết sự cố..." required></textarea>
+            </div>
+
+            <!-- Media Attachments -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Đính kèm phương tiện</label>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <button class="border-2 border-dashed border-gray-300 rounded-lg py-4 flex flex-col items-center justify-center text-gray-500 hover:border-blue-400 transition">
+                        <i class="fas fa-camera text-2xl mb-2"></i>
+                        <span class="text-sm">Chụp ảnh</span>
+                    </button>
+                    <button class="border-2 border-dashed border-gray-300 rounded-lg py-4 flex flex-col items-center justify-center text-gray-500 hover:border-blue-400 transition">
+                        <i class="fas fa-video text-2xl mb-2"></i>
+                        <span class="text-sm">Quay video</span>
+                    </button>
+                </div>
+                
+                <!-- Media Preview Area -->
+                <div class="media-previews grid grid-cols-3 gap-2 hidden">
+                    <!-- Media items will be added here -->
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition">
+                GỬI BÁO CÁO
+            </button>
+        </div>
+
+        <!-- Recent Reports -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Báo cáo gần đây</h2>
+            
+            <div class="space-y-3">
+                <div class="border-l-4 border-blue-500 pl-3 py-2">
+                    <div class="flex justify-between items-start">
+                        <span class="text-sm font-medium">Tai nạn giao thông</span>
+                        <span class="text-xs text-gray-500">10 phút trước</span>
+                    </div>
+                    <p class="text-sm text-gray-600">Ngã tư Lê Văn Việt - Nguyễn Văn Linh</p>
+                    <span class="status-badge inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full mt-1">
+                        Đang xử lý
+                    </span>
+                </div>
+                
+                <div class="border-l-4 border-green-500 pl-3 py-2">
+                    <div class="flex justify-between items-start">
+                        <span class="text-sm font-medium">Mất điện khu vực</span>
+                        <span class="text-xs text-gray-500">2 giờ trước</span>
+                    </div>
+                    <p class="text-sm text-gray-600">Đường số 10, P. Tân Phú</p>
+                    <span class="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full mt-1">
+                        Đã giải quyết
+                    </span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-3xl">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-around">
+                <a href="#" class="flex flex-col items-center text-blue-600">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="text-xs mt-1">Trang chủ</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <i class="fas fa-history text-xl"></i>
+                    <span class="text-xs mt-1">Lịch sử</span>
+                </a>
+                <div class="relative -mt-8">
+                    <button class="emergency-btn w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl floating-action">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <i class="fas fa-map-marker-alt text-xl"></i>
+                    <span class="text-xs mt-1">Bản đồ</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <i class="fas fa-user text-xl"></i>
+                    <span class="text-xs mt-1">Tài khoản</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Simple form handling and media capture simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            const emergencyBtn = document.querySelector('.emergency-btn');
+            const form = document.querySelector('form');
+            const mediaButtons = document.querySelectorAll('.border-dashed');
+            const mediaPreviews = document.querySelector('.media-previews');
+            
+            // Emergency button handler
+            emergencyBtn.addEventListener('click', function() {
+                if (confirm('Bạn có chắc chắn muốn báo cáo sự cố khẩn cấp?')) {
+                    // Auto-fill emergency data
+                    document.querySelector('input[type="tel"]').value = '0331234567';
+                    document.querySelector('textarea').value = 'SỰ CỐ KHẨN CẤP - CẦN HỖ TRỢ NGAY LẬP TỨC!';
+                    
+                    // Scroll to form
+                    document.querySelector('form').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+            
+            // Media capture simulation
+            mediaButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Simulate media capture
+                    const mediaType = this.querySelector('span').textContent.toLowerCase();
+                    const mediaHTML = `
+                        <div class="media-preview relative">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/804f2c46-a21a-4212-ac38-c2573e974bfc.png" alt="${mediaType === 'chụp ảnh' ? 'Ảnh chụp sự cố hiện trường' : 'Video ghi lại sự cố'}" class="w-full h-24 object-cover rounded-lg">
+                            <button class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    mediaPreviews.classList.remove('hidden');
+                    mediaPreviews.innerHTML += mediaHTML;
+                });
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Simulate submission
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                
+                submitBtn.textContent = 'ĐANG GỬI...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    alert('Báo cáo của bạn đã được gửi thành công! Mã số: #' + Math.floor(Math.random() * 10000));
+                    form.reset();
+                    mediaPreviews.classList.add('hidden');
+                    mediaPreviews.innerHTML = '';
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
+

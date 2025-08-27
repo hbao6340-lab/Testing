@@ -1,0 +1,27 @@
+undefined Unable to resolve module expo-image-picker from /home/runner/workspace/app/(tabs)/index.tsx: expo-image-picker could not be found within the project or in these directories:
+  node_modules
+[0m [90m 4 |[39m [36mimport[39m { [33mSafeAreaView[39m } [36mfrom[39m [32m'react-native-safe-area-context'[39m[33m;[39m
+ [90m 5 |[39m [36mimport[39m { [33mIonicons[39m } [36mfrom[39m [32m'@expo/vector-icons'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mImagePicker[39m [36mfrom[39m [32m'expo-image-picker'[39m[33m;[39m
+ [90m   |[39m                               [31m[1m^[22m[39m
+ [90m 7 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mLocation[39m [36mfrom[39m [32m'expo-location'[39m[33m;[39m
+ [90m 8 |[39m
+ [90m 9 |[39m [36minterface[39m [33mReport[39m {[0m
+undefined Unable to resolve module expo-image-picker from /home/runner/workspace/app/(tabs)/index.tsx: expo-image-picker could not be found within the project or in these directories:
+  node_modules
+[0m [90m 4 |[39m [36mimport[39m { [33mSafeAreaView[39m } [36mfrom[39m [32m'react-native-safe-area-context'[39m[33m;[39m
+ [90m 5 |[39m [36mimport[39m { [33mIonicons[39m } [36mfrom[39m [32m'@expo/vector-icons'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mImagePicker[39m [36mfrom[39m [32m'expo-image-picker'[39m[33m;[39m
+ [90m   |[39m                               [31m[1m^[22m[39m
+ [90m 7 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mLocation[39m [36mfrom[39m [32m'expo-location'[39m[33m;[39m
+ [90m 8 |[39m
+ [90m 9 |[39m [36minterface[39m [33mReport[39m {[0m
+undefined Unable to resolve module expo-image-picker from /home/runner/workspace/app/(tabs)/index.tsx: expo-image-picker could not be found within the project or in these directories:
+  node_modules
+[0m [90m 4 |[39m [36mimport[39m { [33mSafeAreaView[39m } [36mfrom[39m [32m'react-native-safe-area-context'[39m[33m;[39m
+ [90m 5 |[39m [36mimport[39m { [33mIonicons[39m } [36mfrom[39m [32m'@expo/vector-icons'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mImagePicker[39m [36mfrom[39m [32m'expo-image-picker'[39m[33m;[39m
+ [90m   |[39m                               [31m[1m^[22m[39m
+ [90m 7 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mLocation[39m [36mfrom[39m [32m'expo-location'[39m[33m;[39m
+ [90m 8 |[39m
+ [90m 9 |[39m [36minterface[39m [33mReport[39m {[0m

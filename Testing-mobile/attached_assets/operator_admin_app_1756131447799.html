@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trung Tâm Điều Hành - Ứng Dụng Quản Lý</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --alert-color: #dc2626;
+            --warning-color: #d97706;
+            --success-color: #059669;
+            --info-color: #2563eb;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .emergency-alert {
+            animation: emergencyPulse 1s infinite;
+            border: 2px solid var(--alert-color);
+        }
+        
+        @keyframes emergencyPulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+        
+        .notification-badge {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+        
+        .status-pending { background: linear-gradient(135deg, var(--warning-color), #f59e0b); }
+        .status-processing { background: linear-gradient(135deg, var(--info-color), #3b82f6); }
+        .status-resolved { background: linear-gradient(135deg, var(--success-color), #10b981); }
+        .status-emergency { background: linear-gradient(135deg, var(--alert-color), #ef4444); }
+        
+        .department-tag {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .department-tag:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .map-overview {
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .incident-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .incident-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .incident-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        .incident-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+        
+        .sound-wave {
+            animation: soundWave 1.5s infinite;
+        }
+        
+        @keyframes soundWave {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-gray-900 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-headset text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">TRUNG TÂM ĐIỀU HÀNH</h1>
+                        <p class="text-sm text-blue-300">Hệ thống quản lý sự cố</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                            <i class="fas fa-bell text-yellow-400"></i>
+                            <span class="notification-badge absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/37565d38-30f5-4bc3-9743-6b845b5373e2.png" alt="Operator profile picture - professional emergency response personnel in uniform" class="w-10 h-10 rounded-full border-2 border-blue-500">
+                        <span class="text-sm font-medium">Nguyễn Văn A</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="dashboard-card rounded-2xl p-4 text-center">
+                <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-exclamation-triangle text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-red-400">12</h3>
+                <p class="text-sm text-gray-300">Sự cố khẩn cấp</p>
+            </div>
+            
+            <div class="dashboard-card rounded-2xl p-4 text-center">
+                <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-clock text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-yellow-400">24</h3>
+                <p class="text-sm text-gray-300">Đang xử lý</p>
+            </div>
+            
+            <div class="dashboard-card rounded-2xl p-4 text-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-tasks text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-blue-400">156</h3>
+                <p class="text-sm text-gray-300">Tổng sự cố</p>
+            </div>
+            
+            <div class="dashboard-card rounded-2xl p-4 text-center">
+                <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-check-circle text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-green-400">89%</h3>
+                <p class="text-sm text-gray-300">Hoàn thành</p>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Incident List -->
+            <div class="lg:col-span-2">
+                <div class="dashboard-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Danh sách sự cố</h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-600 rounded-lg text-sm">Tất cả</button>
+                            <button class="px-3 py-1 bg-gray-700 rounded-lg text-sm">Mới nhất</button>
+                            <button class="px-3 py-1 bg-gray-700 rounded-lg text-sm">Khẩn cấp</button>
+                        </div>
+                    </div>
+                    
+                    <div class="incident-list space-y-3">
+                        <!-- Emergency Incident -->
+                        <div class="emergency-alert bg-gray-800 rounded-xl p-4 cursor-pointer hover:bg-gray-700 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-emergency px-2 py-1 rounded-full text-xs font-bold">KHẨN CẤP</span>
+                                    <span class="text-red-400 text-sm">#2024-0012</span>
+                                </div>
+                                <span class="text-xs text-gray-400">2 phút trước</span>
+                            </div>
+                            <h4 class="font-semibold text-red-300 mb-1">Tai nạn giao thông nghiêm trọng</h4>
+                            <p class="text-sm text-gray-300 mb-2">Ngã tư Lê Văn Việt - Nguyễn Văn Linh, Q.9</p>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <span class="department-tag bg-red-900 px-2 py-1 rounded text-xs">Giao thông</span>
+                                <span class="department-tag bg-blue-900 px-2 py-1 rounded text-xs">Y tế</span>
+                                <span class="department-tag bg-yellow-900 px-2 py-1 rounded text-xs">Cảnh sát</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">0331234567</span>
+                                <button class="text-blue-400 text-sm hover:text-blue-300">
+                                    <i class="fas fa-phone-alt mr-1"></i> Gọi lại
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Processing Incident -->
+                        <div class="bg-gray-800 rounded-xl p-4 cursor-pointer hover:bg-gray-700 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-processing px-2 py-1 rounded-full text-xs font-bold">ĐANG XỬ LÝ</span>
+                                    <span class="text-blue-400 text-sm">#2024-0011</span>
+                                </div>
+                                <span class="text-xs text-gray-400">15 phút trước</span>
+                            </div>
+                            <h4 class="font-semibold text-white mb-1">Cháy nhỏ tại chung cư</h4>
+                            <p class="text-sm text-gray-300 mb-2">Chung cư Sunrise City, Q.7</p>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <span class="department-tag bg-orange-900 px-2 py-1 rounded text-xs">PCCC</span>
+                                <span class="department-tag bg-purple-900 px-2 py-1 rounded text-xs">Điện lực</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">0912345678</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-green-400 text-sm hover:text-green-300">
+                                        <i class="fas fa-check mr-1"></i> Hoàn thành
+                                    </button>
+                                    <button class="text-blue-400 text-sm hover:text-blue-300">
+                                        <i class="fas fa-phone-alt mr-1"></i> Gọi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Incident -->
+                        <div class="bg-gray-800 rounded-xl p-4 cursor-pointer hover:bg-gray-700 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-pending px-2 py-1 rounded-full text-xs font-bold">CHỜ XỬ LÝ</span>
+                                    <span class="text-yellow-400 text-sm">#2024-0010</span>
+                                </div>
+                                <span class="text-xs text-gray-400">30 phút trước</span>
+                            </div>
+                            <h4 class="font-semibold text-white mb-1">Mất nước sinh hoạt</h4>
+                            <p class="text-sm text-gray-300 mb-2">Đường số 10, P. Tân Phú, Q.7</p>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <span class="department-tag bg-teal-900 px-2 py-1 rounded text-xs">Cấp nước</span>
+                                <span class="department-tag bg-gray-700 px-2 py-1 rounded text-xs">Dân sự</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">0987654321</span>
+                                <button class="text-blue-400 text-sm hover:text-blue-300">
+                                    <i class="fas fa-user-plus mr-1"></i> Phân công
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="space-y-6">
+                <!-- Map Overview -->
+                <div class="dashboard-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4">Bản đồ sự cố</h3>
+                    <div class="map-overview bg-gray-700 rounded-lg flex items-center justify-center">
+                        <div class="text-center text-gray-400">
+                            <i class="fas fa-map-marked-alt text-4xl mb-2"></i>
+                            <p>Bản đồ trực tuyến</p>
+                            <p class="text-sm">Hiển thị vị trí sự cố</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department Tags -->
+                <div class="dashboard-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4">Phân loại phòng ban</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="department-tag bg-red-900 px-3 py-2 rounded text-sm text-center hover:bg-red-800">
+                            <i class="fas fa-fire mr-1"></i> PCCC
+                        </button>
+                        <button class="department-tag bg-blue-900 px-3 py-2 rounded text-sm text-center hover:bg-blue-800">
+                            <i class="fas fa-car-crash mr-1"></i> Giao thông
+                        </button>
+                        <button class="department-tag bg-green-900 px-3 py-2 rounded text-sm text-center hover:bg-green-800">
+                            <i class="fas fa-ambulance mr-1"></i> Y tế
+                        </button>
+                        <button class="department-tag bg-purple-900 px-3 py-2 rounded text-sm text-center hover:bg-purple-800">
+                            <i class="fas fa-bolt mr-1"></i> Điện lực
+                        </button>
+                        <button class="department-tag bg-teal-900 px-3 py-2 rounded text-sm text-center hover:bg-teal-800">
+                            <i class="fas fa-tint mr-1"></i> Cấp nước
+                        </button>
+                        <button class="department-tag bg-yellow-900 px-3 py-2 rounded text-sm text-center hover:bg-yellow-800">
+                            <i class="fas fa-shield-alt mr-1"></i> Cảnh sát
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sound Controls -->
+                <div class="dashboard-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4">Điều khiển âm thanh</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <span>Thông báo âm thanh</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>Âm lượng</span>
+                        <div class="w-24">
+                            <input type="range" min="0" max="100" value="80" class="w-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Emergency Alert Modal -->
+    <div id="emergencyModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden">
+        <div class="bg-red-900 rounded-2xl p-6 mx-4 max-w-md w-full">
+            <div class="text-center mb-4">
+                <div class="sound-wave w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">SỰ CỐ KHẨN CẤP!</h3>
+                <p class="text-red-200">Tai nạn giao thông nghiêm trọng</p>
+            </div>
+            
+            <div class="bg-red-800 rounded-lg p-4 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-red-200">#2024-0012</span>
+                    <span class="text-sm text-red-300">2 phút trước</span>
+                </div>
+                <p class="text-white mb-2">Ngã tư Lê Văn Việt - Nguyễn Văn Linh</p>
+                <p class="text-red-200 text-sm">0331234567</p>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button class="flex-1 bg-white text-red-600 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                    <i class="fas fa-phone-alt mr-2"></i> Gọi
+                </button>
+                <button class="flex-1 bg-red-700 text-white py-3 rounded-lg font-semibold hover:bg-red-600">
+                    <i class="fas fa-times mr-2"></i> Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound Notification -->
+    <audio id="alertSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertSound = document.getElementById('alertSound');
+            const emergencyModal = document.getElementById('emergencyModal');
+            const notificationBell = document.querySelector('.fa-bell');
+            const incidentItems = document.querySelectorAll('.bg-gray-800');
+            
+            // Simulate emergency alert
+            setTimeout(() => {
+                // Play alert sound
+                alertSound.play().catch(e => console.log('Audio play failed:', e));
+                
+                // Show emergency modal
+                emergencyModal.classList.remove('hidden');
+                
+                // Animate notification bell
+                notificationBell.parentElement.classList.add('animate-pulse');
+            }, 3000);
+            
+            // Close modal handler
+            emergencyModal.addEventListener('click', function(e) {
+                if (e.target.classList.contains('fa-times') || 
+                    e.target.textContent.includes('Đóng')) {
+                    this.classList.add('hidden');
+                    notificationBell.parentElement.classList.remove('animate-pulse');
+                }
+            });
+            
+            // Incident click handlers
+            incidentItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Simulate opening incident details
+                    const incidentId = this.querySelector('.text-blue-400, .text-yellow-400, .text-red-400').textContent;
+                    alert('Mở chi tiết sự cố: ' + incidentId);
+                });
+            });
+            
+            // Department tag click handlers
+            document.querySelectorAll('.department-tag').forEach(tag => {
+                tag.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const department = this.textContent.trim();
+                    alert('Đã chọn phòng ban: ' + department);
+                });
+            });
+            
+            // Sound control handlers
+            const soundToggle = document.querySelector('input[type="checkbox"]');
+            const volumeSlider = document.querySelector('input[type="range"]');
+            
+            soundToggle.addEventListener('change', function() {
+                if (!this.checked) {
+                    alertSound.volume = 0;
+                } else {
+                    alertSound.volume = volumeSlider.value / 100;
+                }
+            });
+            
+            volumeSlider.addEventListener('input', function() {
+                alertSound.volume = this.value / 100;
+            });
+        });
+    </script>
+</body>
+</html>
+
